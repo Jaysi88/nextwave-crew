@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 const links = [
-  ['Overview', '/dashboard'], ['CrewID', '/crew-id'], ['Community', '/community'], ['Career', '/career'], ['CrewWealth', '/wealth'], ['Crew Wallet', '/wallet'], ['Membership', '/membership'], ['Support', '/support'], ['Admin', '/admin'],
+  ['Overview', '/dashboard'], ['CrewID', '/crew-id'], ['Members', '/members'], ['Community', '/community'], ['Career', '/career'], ['CrewWealth', '/wealth'], ['Crew Wallet', '/wallet'], ['Membership', '/membership'], ['Support', '/support'], ['Admin', '/admin'],
 ];
 
 export default function AppShell({ title, kicker, children }: { title: string; kicker: string; children: React.ReactNode }) {
