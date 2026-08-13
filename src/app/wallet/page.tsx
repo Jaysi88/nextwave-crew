@@ -10,18 +10,34 @@ export default function WalletPage() {
   const [data, setData] = useState<RewardData | null>(null);
   const [catalog, setCatalog] = useState<CatalogItem[]>([]);
   const [message, setMessage] = useState('');
+
   async function load() {
     const [wallet, rewards] = await Promise.all([fetch('/api/rewards'), fetch('/api/rewards/catalog')]);
-    const walletJson = await wallet.json(); const rewardsJson = await rewards.json();
-    setData(walletJson); if (rewards.ok) setCatalog(rewardsJson.items || []);
+    const walletJson = await wallet.json();
+    const rewardsJson = await rewards.json();
+    setData(walletJson);
+    if (rewards.ok) setCatalog(rewardsJson.items || []);
   }
-  useEffect(() => { load().catch(() => setData({ error: 'Unable to load wallet.' })); }, []);
+
+  useEffect(() => {
+    void Promise.all([fetch('/api/rewards'), fetch('/api/rewards/catalog')]).then(async ([wallet, rewards]) => {
+      const walletJson = await wallet.json();
+      const rewardsJson = await rewards.json();
+      setData(walletJson);
+      if (rewards.ok) setCatalog(rewardsJson.items || []);
+    }).catch(() => setData({ error: 'Unable to load wallet.' }));
+  }, []);
+
   async function redeem(item: CatalogItem) {
     setMessage('Processing redemption…');
     const r = await fetch('/api/rewards/redeem', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ itemId: item.id }) });
-    const j = await r.json(); setMessage(r.ok ? `${item.title} requested successfully.` : j.error || 'Unable to redeem reward.'); if (r.ok) await load();
+    const j = await r.json();
+    setMessage(r.ok ? `${item.title} requested successfully.` : j.error || 'Unable to redeem reward.');
+    if (r.ok) await load();
   }
-  const balance = Number(data?.account?.points_balance ?? 0); const lifetime = Number(data?.account?.lifetime_earned ?? 0);
+
+  const balance = Number(data?.account?.points_balance ?? 0);
+  const lifetime = Number(data?.account?.lifetime_earned ?? 0);
   return <AppShell title="Crew Wallet" kicker="SEAPOINTS">
     <div className="demoBanner">SeaPoints are internal loyalty points for member benefits. They are not cryptocurrency, cash, or an investment product.</div>
     {message && <p>{message}</p>}
