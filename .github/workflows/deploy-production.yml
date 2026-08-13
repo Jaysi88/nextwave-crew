@@ -1,0 +1,43 @@
+name: Deploy production
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+concurrency:
+  group: nextwave-crew-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run build
+      - name: Apply Neon schema and member social migration
+        if: ${{ secrets.DATABASE_URL != '' }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes postgresql-client
+          psql "$DATABASE_URL" --set ON_ERROR_STOP=1 --file db/schema.sql
+          psql "$DATABASE_URL" --set ON_ERROR_STOP=1 --file db/migrations/002_member_social.sql
+      - name: Package tracked source
+        run: git archive --format=zip --output=nextwave-crew.zip HEAD
+      - name: Deploy to Hostinger
+        env:
+          HOSTINGER_API_TOKEN: ${{ secrets.HOSTINGER_API_TOKEN }}
+          HOSTINGER_USERNAME: u649191426
+          HOSTINGER_DOMAIN: crew.nextwavefusion.com
+        run: node scripts/deploy-hostinger.mjs nextwave-crew.zip
