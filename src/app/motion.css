@@ -1,0 +1,19 @@
+.oceanCursorGlow {
+  position: fixed;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: .6;
+  filter: blur(16px);
+  background: radial-gradient(circle, rgba(81, 224, 219, .12), rgba(69, 140, 230, .055) 42%, transparent 70%);
+  will-change: transform;
+  transition: opacity .3s ease;
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .oceanCursorGlow { display: none; }
+}

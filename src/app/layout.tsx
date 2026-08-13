@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import OceanMotionLayer from '@/components/OceanMotionLayer';
 import './globals.css';
+import './ocean.css';
+import './motion.css';
 
 export const metadata: Metadata = {
   title: 'NextWave Crew | Work at sea. Build life on shore.',
@@ -11,6 +14,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body>
+        <OceanMotionLayer />
         <header className="topbar">
           <Link className="brand" href="/"><span className="brandMark">NW</span><span>NextWave <b>Crew</b></span></Link>
           <nav className="navLinks" aria-label="Main navigation">
