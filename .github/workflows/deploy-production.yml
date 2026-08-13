@@ -12,6 +12,8 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     permissions:
       contents: read
     steps:
@@ -25,9 +27,7 @@ jobs:
       - run: npm run lint
       - run: npm run build
       - name: Apply Neon schema and member social migration
-        if: ${{ secrets.DATABASE_URL != '' }}
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        if: ${{ env.DATABASE_URL != '' }}
         run: |
           sudo apt-get update
           sudo apt-get install --yes postgresql-client
