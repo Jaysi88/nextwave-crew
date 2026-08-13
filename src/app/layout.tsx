@@ -4,6 +4,9 @@ import OceanMotionLayer from '@/components/OceanMotionLayer';
 import './globals.css';
 import './ocean.css';
 import './motion.css';
+import './pearl.css';
+import './pearl-extras.css';
+import './pearl-overrides.css';
 
 export const metadata: Metadata = {
   title: 'NextWave Crew | Work at sea. Build life on shore.',

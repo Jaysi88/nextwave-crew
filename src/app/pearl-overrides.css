@@ -1,0 +1,24 @@
+.pillTabs span{white-space:nowrap;padding:9px 13px;border-radius:13px;color:#71859a;background:transparent;cursor:default}.pillTabs span.active{color:#564bc9;background:white;box-shadow:0 7px 20px rgba(73,91,117,.07)}
+.actionPills .statusPill{min-height:36px;display:inline-flex;align-items:center;padding:0 12px}
+.feedActions span{user-select:none}
+.communityComposer .supportForm{margin:0}
+.communityComposer label{width:100%}
+
+/* Keep utility controls above dense page content and make every module breathe consistently. */
+.appContent>.demoBanner,.appContent>.pillTabs,.appContent>.communityGrid,.appContent>.panel,.appContent>.twoCol,.appContent>.careerStats,.appContent>.moneyGrid,.appContent>.crewIdCard{margin-top:14px}
+.panelHead{gap:18px}.panelHead>div{min-width:0}.panelHead h2{color:#1a334a!important}
+
+/* Round every compact control consistently, including native page-specific buttons. */
+button{border-radius:15px}
+.communityCard button,.jobCard button,.vault button,.priceCard button,.panel button{min-height:40px}
+
+/* Improved touch targets and horizontal scrolling for dense menu/chip rows. */
+.tagRow,.chipCloud,.actionPills,.pillTabs{-webkit-overflow-scrolling:touch}
+@media(max-width:720px){
+  .panel,.communityCard,.priceCard,.crewIdCard,.coffeeCard,.binancePayCard{border-radius:21px!important}
+  .panel{padding:18px!important}.communityCard{padding:18px!important}
+  .panelHead{align-items:flex-start!important;flex-direction:column}.panelHead .statusPill{align-self:flex-start}
+  .jobCard{align-items:flex-start!important;gap:14px}.matchScore{align-items:flex-start!important;min-width:auto!important}
+  .pillTabs{width:100%}.pillTabs span{flex:0 0 auto}
+  .communityComposerActions{align-items:stretch}.communityComposerActions>.actionPills{flex:1}.communityComposerActions>.primaryButton{width:100%}
+}
