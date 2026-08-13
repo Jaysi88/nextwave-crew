@@ -26,6 +26,12 @@ export async function PUT(request: Request) {
   const seekingMentor = typeof body.seekingMentor === 'boolean' ? body.seekingMentor : null;
   await member.sql`update profiles set display_name=coalesce(${displayName},display_name), nationality=coalesce(${nationality},nationality), country_of_residence=coalesce(${country},country_of_residence), avatar_url=coalesce(${avatarUrl},avatar_url), cover_url=coalesce(${coverUrl},cover_url), updated_at=now() where id=${member.user.id}`;
   await member.sql`update crew_profiles set department=coalesce(${department},department), current_position=coalesce(${currentPosition},current_position), ship_segment=coalesce(${shipSegment},ship_segment), career_summary=coalesce(${careerSummary},career_summary), open_to_work=coalesce(${openToWork},open_to_work), open_to_mentor=coalesce(${openToMentor},open_to_mentor), seeking_mentor=coalesce(${seekingMentor},seeking_mentor), updated_at=now() where user_id=${member.user.id}`;
+  await member.sql`update crew_profiles cp set profile_score=least(100,
+    (case when p.display_name<>'' then 15 else 0 end)+(case when p.nationality is not null then 15 else 0 end)+
+    (case when p.avatar_url is not null then 10 else 0 end)+(case when cp.department is not null then 15 else 0 end)+
+    (case when cp.current_position is not null then 15 else 0 end)+(case when cp.ship_segment is not null then 10 else 0 end)+
+    (case when cp.career_summary is not null then 10 else 0 end)+(case when exists(select 1 from certificates c where c.user_id=p.id) then 10 else 0 end))
+    from profiles p where cp.user_id=p.id and p.id=${member.user.id}`;
   const completion = await member.sql`select p.display_name,p.nationality,cp.department,cp.current_position from profiles p join crew_profiles cp on cp.user_id=p.id where p.id=${member.user.id}`;
   const row = completion[0] as Record<string,unknown>|undefined;
   if (row?.display_name && row?.nationality && row?.department && row?.current_position) await awardPointsOnce(member.user.id,100,'PROFILE_COMPLETE','onboarding-profile-v1');

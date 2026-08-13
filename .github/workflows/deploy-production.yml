@@ -36,6 +36,8 @@ jobs:
           psql "$DATABASE_URL" --set ON_ERROR_STOP=1 --file db/migrations/002_member_social.sql
           psql "$DATABASE_URL" --set ON_ERROR_STOP=1 --file db/migrations/003_rewards_catalog.sql
           psql "$DATABASE_URL" --set ON_ERROR_STOP=1 --file db/migrations/004_admin_rbac.sql
+          psql "$DATABASE_URL" --set ON_ERROR_STOP=1 --file db/migrations/005_production_operations.sql
+          psql "$DATABASE_URL" --set ON_ERROR_STOP=1 --file db/seed.sql
       - name: Package tracked source
         run: git archive --format=zip --output=nextwave-crew.zip HEAD
       - name: Deploy to Hostinger
