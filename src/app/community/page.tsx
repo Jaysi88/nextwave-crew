@@ -15,6 +15,8 @@ export default function CommunityPage() {
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
   const [openComments, setOpenComments] = useState<Record<string, boolean>>({});
   const [message, setMessage] = useState('');
+  const activeId = active?.id;
+  const activeJoined = active?.joined;
 
   async function loadCommunities() {
     const r = await fetch('/api/communities');
@@ -32,8 +34,27 @@ export default function CommunityPage() {
     if (r.ok) setPosts(j.posts); else setMessage(j.error || 'Unable to load posts.');
   }
 
-  useEffect(() => { void loadCommunities(); }, []);
-  useEffect(() => { if (active) void loadPosts(active); }, [active?.id, active?.joined]);
+  useEffect(() => {
+    let cancelled = false;
+    void fetch('/api/communities').then(async r => {
+      const j = await r.json();
+      if (cancelled) return;
+      if (r.ok) { setCommunities(j.communities); setActive(j.communities[0] ?? null); }
+      else setMessage(j.error || 'Connect Neon and sign in to activate community data.');
+    });
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (!activeId || !activeJoined) return;
+    let cancelled = false;
+    void fetch(`/api/community/posts?communityId=${encodeURIComponent(activeId)}`).then(async r => {
+      const j = await r.json();
+      if (cancelled) return;
+      if (r.ok) setPosts(j.posts); else setMessage(j.error || 'Unable to load posts.');
+    });
+    return () => { cancelled = true; };
+  }, [activeId, activeJoined]);
 
   async function toggleJoin(c: Community) {
     const r = await fetch('/api/community/memberships', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ communityId: c.id, action: c.joined ? 'leave' : 'join' }) });

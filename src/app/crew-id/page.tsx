@@ -14,7 +14,15 @@ export default function CrewIDPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [message, setMessage] = useState('');
   async function refresh() { const r = await fetch('/api/me'); const j = await r.json(); setProfile(r.ok ? j.member : { id: '', error: j.error }); }
-  useEffect(() => { void refresh(); }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetch('/api/me').then(async r => {
+      const j = await r.json();
+      if (!cancelled) setProfile(r.ok ? j.member : { id: '', error: j.error });
+    });
+    return () => { cancelled = true; };
+  }, []);
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
