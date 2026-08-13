@@ -75,14 +75,25 @@ export default function CommunityPage() {
 
   return <AppShell title="Crew Community" kicker="PROFESSIONAL NETWORK">
     <div className="demoBanner">Private department communities for people who understand life at sea. Live data activates with Neon Auth and the database migrations.</div>
+    <div className="pillTabs" aria-label="Community view"><span className="active">Spaces</span><span>Following</span><span>Saved</span></div>
     {message && <p>{message}</p>}
+
     <div className="communityGrid">{communities.map((c, i) => <article className={`communityCard ${active?.id === c.id ? 'featuredPrice' : ''}`} key={c.id}>
-      <div className="communityIcon">{['♠','◫','⚓','⚙','✦'][i % 5]}</div><span className="microLabel">{c.department || 'CREW COMMUNITY'}</span><h3>{c.name}</h3><p>{c.description}</p><small>{c.member_count} members</small>
-      <div><button className="ghostButton small" onClick={() => { setPosts([]); setActive(c); }}>Open space</button> <button className="ghostButton small" onClick={() => toggleJoin(c)}>{c.joined ? 'Leave' : 'Join'}</button></div>
+      <div className="communityIcon">{['♠','◫','⚓','⚙','✦'][i % 5]}</div>
+      <span className="microLabel">{c.department || 'CREW COMMUNITY'}</span>
+      <h3>{c.name}</h3><p>{c.description}</p><small>{c.member_count} members</small>
+      <div className="actionPills"><button className="ghostButton small" onClick={() => { setPosts([]); setActive(c); }}>Open space</button><button className="ghostButton small" onClick={() => toggleJoin(c)}>{c.joined ? 'Leave' : 'Join'}</button></div>
     </article>)}</div>
-    {active && <section className="panel"><div className="panelHead"><div><span className="microLabel">{active.joined ? 'MEMBER SPACE' : 'JOIN TO PARTICIPATE'}</span><h2>{active.name}</h2></div></div>
-      {active.joined ? <><form className="supportForm" onSubmit={post}><label>Share with the crew<textarea name="body" rows={4} maxLength={10000} required /></label><button className="primaryButton" type="submit">Publish post</button></form>
-      {posts.length ? posts.map(p => <div className="feedItem" key={p.id}><span className="avatar">{p.display_name.slice(0,2).toUpperCase()}</span><div><b>{p.display_name} · {p.community_name}</b><p>{p.body}</p><small>{new Date(p.created_at).toLocaleString()}</small></div></div>) : <p>No posts yet. Start the conversation.</p>}</> : <p>Join this space to read and publish member posts.</p>}
+
+    {active && <section className="panel">
+      <div className="panelHead"><div><span className="microLabel">{active.joined ? 'MEMBER SPACE' : 'JOIN TO PARTICIPATE'}</span><h2>{active.name}</h2><p>{active.description}</p></div><span className="statusPill"><span className="liveDot" /> {active.member_count} crew</span></div>
+      {active.joined ? <>
+        <form className="communityComposer supportForm" onSubmit={post}>
+          <label>Share with the crew<textarea name="body" rows={4} maxLength={10000} placeholder="Ask a question, share an experience or help another crew member…" required /></label>
+          <div className="communityComposerActions"><div className="actionPills"><span className="statusPill">Ask</span><span className="statusPill">Share insight</span><span className="statusPill">Career tip</span></div><button className="primaryButton" type="submit">Publish post</button></div>
+        </form>
+        {posts.length ? posts.map(p => <article className="feedItem" key={p.id}><span className="avatar">{p.display_name.slice(0,2).toUpperCase()}</span><div><b>{p.display_name} · {p.community_name}</b><p>{p.body}</p><small>{new Date(p.created_at).toLocaleString()}</small><div className="feedActions"><span>♡ Recommend</span><span>◌ Discuss</span><span>◇ Save</span></div></div></article>) : <p>No posts yet. Start the conversation.</p>}
+      </> : <p>Join this space to read and publish member posts.</p>}
     </section>}
   </AppShell>;
 }
