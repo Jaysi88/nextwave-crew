@@ -18,6 +18,8 @@ const links: Array<{ label: string; href: string; icon: IconName }> = [
   { label: 'Admin', href: '/admin', icon: 'admin' },
 ];
 
+const mobileLinks = links.filter(link => ['/dashboard', '/community', '/career', '/wallet', '/crew-id'].includes(link.href));
+
 function SeaIcon({ name }: { name: IconName }) {
   const common = { fill: 'none', stroke: 'currentColor', strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
   const shapes: Record<IconName, React.ReactNode> = {
@@ -35,27 +37,49 @@ function SeaIcon({ name }: { name: IconName }) {
   return <span className="navIcon" aria-hidden="true"><svg viewBox="0 0 24 24">{shapes[name]}</svg></span>;
 }
 
+function UtilityIcon({ type }: { type: 'search' | 'community' | 'wallet' }) {
+  if (type === 'search') return <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6" fill="none" stroke="currentColor"/><path d="m16 16 4 4" fill="none" stroke="currentColor" strokeLinecap="round"/></svg>;
+  if (type === 'wallet') return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h14a2 2 0 0 1 2 2v10H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h11" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/><path d="M15 12h7v4h-7a2 2 0 1 1 0-4Z" fill="none" stroke="currentColor"/></svg>;
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4Z" fill="none" stroke="currentColor" strokeLinejoin="round"/><path d="M8 9h8M8 12h5" fill="none" stroke="currentColor" strokeLinecap="round"/></svg>;
+}
+
 export default function AppShell({ title, kicker, children }: { title: string; kicker: string; children: React.ReactNode }) {
   const pathname = usePathname();
+  const isActive = (href: string) => pathname === href || (href !== '/dashboard' && pathname.startsWith(`${href}/`));
+
   return (
     <main className="appPage">
       <aside className="sidebar">
         <div className="sideBrand"><span className="brandMark">NW</span><div><b>NextWave Crew</b><small>Member OS · At sea</small></div></div>
         <nav aria-label="Member navigation">
           {links.map(({ label, href, icon }) => {
-            const active = pathname === href || (href !== '/dashboard' && pathname.startsWith(`${href}/`));
+            const active = isActive(href);
             return <Link key={href} href={href} className={active ? 'active' : undefined} aria-current={active ? 'page' : undefined}><SeaIcon name={icon} /><span>{label}</span></Link>;
           })}
         </nav>
         <div className="sideBottom"><span className="avatar">NW</span><div><b>Member deck</b><small>Signal connected</small></div></div>
       </aside>
+
       <section className="appContent">
+        <div className="appUtilityBar" aria-label="Quick actions">
+          <Link className="appUtilitySearch" href="/members"><UtilityIcon type="search" /><span>Search crew, roles and communities</span></Link>
+          <Link className="appUtilityIcon" href="/community" aria-label="Open community"><UtilityIcon type="community" /></Link>
+          <Link className="appUtilityIcon" href="/wallet" aria-label="Open Crew Wallet"><UtilityIcon type="wallet" /></Link>
+          <Link className="appUtilityProfile" href="/crew-id"><span className="avatar">NW</span><span>My CrewID</span></Link>
+        </div>
         <div className="appHeader">
           <div><span className="microLabel">{kicker}</span><h1>{title}</h1></div>
           <div className="statusPill"><span className="liveDot" /> Member workspace</div>
         </div>
         {children}
       </section>
+
+      <nav className="mobileDock" aria-label="Mobile member navigation">
+        {mobileLinks.map(({ label, href, icon }) => {
+          const active = isActive(href);
+          return <Link key={href} href={href} className={active ? 'active' : undefined} aria-current={active ? 'page' : undefined}><SeaIcon name={icon} /><span>{label}</span></Link>;
+        })}
+      </nav>
     </main>
   );
 }
