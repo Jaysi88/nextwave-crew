@@ -26,13 +26,16 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run build
-      - name: Apply Neon schema and member social migration
+      - name: Apply Neon schema and migrations
         if: ${{ env.DATABASE_URL != '' }}
         run: |
           sudo apt-get update
           sudo apt-get install --yes postgresql-client
           psql "$DATABASE_URL" --set ON_ERROR_STOP=1 --file db/schema.sql
+          psql "$DATABASE_URL" --set ON_ERROR_STOP=1 --file db/migrations/002_member_core.sql
           psql "$DATABASE_URL" --set ON_ERROR_STOP=1 --file db/migrations/002_member_social.sql
+          psql "$DATABASE_URL" --set ON_ERROR_STOP=1 --file db/migrations/003_rewards_catalog.sql
+          psql "$DATABASE_URL" --set ON_ERROR_STOP=1 --file db/migrations/004_admin_rbac.sql
       - name: Package tracked source
         run: git archive --format=zip --output=nextwave-crew.zip HEAD
       - name: Deploy to Hostinger

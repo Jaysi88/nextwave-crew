@@ -3,11 +3,11 @@
 
 create extension if not exists pgcrypto;
 
-create type membership_status as enum ('trial','active','past_due','cancelled','paused');
-create type visibility_level as enum ('private','members','public');
-create type verification_status as enum ('unverified','pending','verified','rejected');
-create type application_status as enum ('saved','applied','screening','interview','offer','hired','withdrawn','rejected');
-create type moderation_status as enum ('open','reviewing','resolved','dismissed');
+do $$ begin create type membership_status as enum ('trial','active','past_due','cancelled','paused'); exception when duplicate_object then null; end $$;
+do $$ begin create type visibility_level as enum ('private','members','public'); exception when duplicate_object then null; end $$;
+do $$ begin create type verification_status as enum ('unverified','pending','verified','rejected'); exception when duplicate_object then null; end $$;
+do $$ begin create type application_status as enum ('saved','applied','screening','interview','offer','hired','withdrawn','rejected'); exception when duplicate_object then null; end $$;
+do $$ begin create type moderation_status as enum ('open','reviewing','resolved','dismissed'); exception when duplicate_object then null; end $$;
 
 create table if not exists profiles (
   id text primary key,
@@ -20,6 +20,7 @@ create table if not exists profiles (
   preferred_language text not null default 'en',
   visibility visibility_level not null default 'members',
   verification verification_status not null default 'unverified',
+  platform_role text not null default 'member' check (platform_role in ('member','moderator','verification_officer','recruiter','admin','owner')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
