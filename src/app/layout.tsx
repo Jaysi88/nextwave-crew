@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import './globals.css';
+import './ocean.css';
 
 export const metadata: Metadata = {
   title: 'NextWave Crew | Work at sea. Build life on shore.',
