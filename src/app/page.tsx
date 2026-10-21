@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-const departments = ['Casino', 'Hotel', 'Deck', 'Engine', 'Culinary', 'Entertainment', 'Retail', 'Spa', 'Medical', 'Security', 'HR', 'Shore-side'];
+const departments = ['Hotel', 'Deck', 'Engine', 'Culinary', 'Entertainment', 'Retail', 'Spa', 'Medical', 'Security', 'HR', 'Shore-side'];
 
 export default function Home() {
   return (

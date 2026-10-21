@@ -19,7 +19,7 @@ export default function OnboardingPage() {
         <label>Display name<input name="displayName" maxLength={100} required /></label>
         <label>Nationality<input name="nationality" maxLength={80} required /></label>
         <label>Country of residence<input name="countryOfResidence" maxLength={80} /></label>
-        <label>Department<input name="department" placeholder="Casino, Deck, Engine, Hotel…" maxLength={80} required /></label>
+        <label>Department<input name="department" placeholder="Hotel, Deck, Engine, Culinary…" maxLength={80} required /></label>
         <label>Current position<input name="currentPosition" maxLength={120} required /></label>
         <label>Ship segment<input name="shipSegment" placeholder="Cruise, Cargo, Offshore…" maxLength={80} /></label>
         <label>Career summary<textarea name="careerSummary" maxLength={1200} rows={5} /></label>
