@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Script from 'next/script';
 import OceanMotionLayer from '@/components/OceanMotionLayer';
 import './globals.css';
 import './ocean.css';
@@ -10,6 +11,7 @@ import './pearl-overrides.css';
 import './social.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://crew.nextwavefusion.com'),
   title: 'NextWave Crew | Work at sea. Build life on shore.',
   description: 'Membership, community, career and financial wellbeing for the global maritime workforce.',
 };
@@ -18,6 +20,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body>
+        <Script defer data-domain="crew.nextwavefusion.com" src="https://plausible.io/js/script.js" strategy="afterInteractive" />
         <OceanMotionLayer />
         <header className="topbar">
           <Link className="brand" href="/"><span className="brandMark">NW</span><span>NextWave <b>Crew</b></span></Link>
